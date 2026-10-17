@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#090611">
+<link rel="manifest" href="./manifest.json">
 <title>BOjNeX Client</title>
 <style>
 *{box-sizing:border-box}
@@ -22,6 +22,7 @@ select{width:100%;background:#0c0813;color:white;border:1px solid #49305f;border
 .stat .value{font-size:22px;font-weight:bold;margin-top:9px;color:#d6a1ff}
 button{width:100%;padding:17px;border:0;border-radius:13px;background:linear-gradient(100deg,#8c35ff,#e34fcb);color:white;font-weight:900;font-size:16px;letter-spacing:1px;box-shadow:0 0 24px #a63dff55}
 button:active{transform:scale(.98)}
+button:disabled{opacity:.65}
 #status{text-align:center;color:#b8a6cc;font-size:12px;margin-top:17px;min-height:18px}
 .note{text-align:center;color:#716781;font-size:11px;line-height:1.6;margin-top:24px}
 </style>
@@ -60,25 +61,24 @@ button:active{transform:scale(.98)}
   <div class="note">BOjNeX CLIENT · Bağlantı tanılama aracı<br>CPU ve RAM değerleri bu web sürümünde ölçülmüyor.</div>
 </div>
 
-  
-
 <script>
 const start = document.getElementById('start');
+const game = document.getElementById('game');
+const server = document.getElementById('server');
+
+// Oyun seçimi, test hedefini de seçer.
+game.addEventListener('change', () => {
+  server.value = game.value;
+});
+
+server.addEventListener('change', () => {
+  game.value = server.value;
+});
 
 start.addEventListener('click', async () => {
-  const hostInput = document.getElementById('server').value.trim();
+  const host = server.value.trim();
   const ping = document.getElementById('ping');
   const status = document.getElementById('status');
-
-  const host = hostInput
-    .replace(/^https?:\/\//i, '')
-    .split('/')[0]
-    .trim();
-
-  if (!host) {
-    status.textContent = 'Lütfen sunucu adresi gir.';
-    return;
-  }
 
   start.disabled = true;
   start.textContent = 'TEST EDİLİYOR...';
@@ -102,7 +102,6 @@ start.addEventListener('click', async () => {
           signal: controller.signal
         }
       );
-
       return Math.round(performance.now() - begin);
     } catch {
       return null;
@@ -112,14 +111,11 @@ start.addEventListener('click', async () => {
   }
 
   try {
-    // İlk istek: bağlantıyı ısıtma ölçümü.
     status.textContent = 'Bağlantı hazırlanıyor...';
     await measure();
 
-    // Beş ölçüm al.
     for (let i = 0; i < 5; i++) {
       status.textContent = `Ölçüm ${i + 1}/5`;
-
       const value = await measure();
 
       if (value !== null) {
@@ -135,9 +131,7 @@ start.addEventListener('click', async () => {
 
       const median = sorted.length % 2
         ? sorted[middle]
-        : Math.round(
-            (sorted[middle - 1] + sorted[middle]) / 2
-          );
+        : Math.round((sorted[middle - 1] + sorted[middle]) / 2);
 
       const average = Math.round(
         results.reduce((sum, value) => sum + value, 0) /
@@ -152,7 +146,7 @@ start.addEventListener('click', async () => {
     } else {
       ping.textContent = '—';
       status.textContent =
-        'Ölçüm alınamadı. Sunucu adresini kontrol et.';
+        'Ölçüm alınamadı. Bağlantını kontrol et.';
     }
   } finally {
     start.disabled = false;
@@ -160,7 +154,5 @@ start.addEventListener('click', async () => {
   }
 });
 </script>
-
-
 </body>
 </html>
