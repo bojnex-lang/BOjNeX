@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101018">
+<title>BOjNeX Client</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101018;color:white;font-family:Arial,sans-serif;padding:22px}
+header{text-align:center;padding:28px 0}
+h1{color:#ff36b7;font-size:34px;margin:0}
+p{color:#aaa}
+.card{background:#1c1c29;border:1px solid #383044;border-radius:16px;padding:20px;margin:16px 0}
+button{width:100%;padding:15px;border:0;border-radius:10px;background:#ff36b7;color:#160b16;font-size:17px;font-weight:bold}
+.value{font-size:38px;color:#ff36b7;font-weight:bold;margin:16px 0}
+.small{font-size:13px;color:#888}
+</style>
+</head>
+<body>
+<header>
+<h1>BOjNeX</h1>
+<p>MY CLIENT · INTERNET TEST</p>
+</header>
+<div class="card">
+<h2>Bağlantı testi</h2>
+<p>İnternet yanıt süreni yaklaşık olarak ölç.</p>
+<div class="value" id="ping">-- ms</div>
+<button onclick="testPing()">TESTİ BAŞLAT</button>
+<p id="status" class="small">Teste hazır</p>
+</div>
+<div class="card">
+<h3>Bilgi</h3>
+<p>Bu test internet yanıt süresini ölçer. Free Fire oyun sunucusunun gerçek pingini göstermez.</p>
+</div>
+<script>
+async function testPing(){
+const v=document.getElementById('ping');
+const s=document.getElementById('status');
+v.textContent='...';
+s.textContent='Bağlantı test ediliyor';
+try{
+const start=performance.now();
+await fetch('https://www.cloudflare.com/cdn-cgi/trace?x='+Date.now(),{cache:'no-store',mode:'no-cors'});
+const ms=Math.round(performance.now()-start);
+v.textContent=ms+' ms';
+s.textContent='Test tamamlandı';
+}catch(e){
+v.textContent='Hata';
+s.textContent='İnternet bağlantını kontrol et';
+}
+}
+</script>
+</body>
+</html>
