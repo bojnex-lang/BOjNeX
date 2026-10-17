@@ -1,14 +1,23 @@
+
 {
   "background_color": "#101820",
   "dir": "auto",
   "display": "standalone",
   "name": "BOjNeX",
-  "orientation": "any",
-  "scope": "/BOjNeX/",
   "short_name": "BOjNeX",
-  "start_url": "/BOjNeX/",
-  "theme_color": "#000000",
-  "id": "/BOjNeX/",
   "description": "BOjNeX — Sunucu bağlantı gecikmesini ölçen hızlı ve basit test aracı.",
-  "lang": "tr"
+  "start_url": "/BOjNeX/",
+  "scope": "/BOjNeX/",
+  "id": "/BOjNeX/",
+  "theme_color": "#000000",
+  "orientation": "any",
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "/BOjNeX/bojnex-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
