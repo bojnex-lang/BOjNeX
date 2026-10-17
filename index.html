@@ -60,30 +60,59 @@ button:active{transform:scale(.98)}
   <div class="note">BOjNeX CLIENT · Bağlantı tanılama aracı<br>CPU ve RAM değerleri bu web sürümünde ölçülmüyor.</div>
 </div>
 
+  
 <script>
-const start=document.getElementById('start');
-start.addEventListener('click',async()=>{
-  const host=document.getElementById('server').value;
-  const ping=document.getElementById('ping');
-  const status=document.getElementById('status');
-  start.disabled=true;
-  start.textContent='TEST EDİLİYOR...';
-  ping.textContent='...';
-  status.textContent='Bağlantı ölçülüyor';
-  const begin=performance.now();
-  try{
-    await fetch('https://'+host+'/cdn-cgi/trace?x='+Math.random(),{
-      mode:'no-cors',cache:'no-store',signal:AbortSignal.timeout(8000)
-    });
-    ping.textContent=Math.round(performance.now()-begin)+' ms';
-    status.textContent='İstek gönderildi; sonuç yaklaşık bağlantı süresidir.';
-  }catch(e){
-    ping.textContent='—';
-    status.textContent='Ölçüm başarısız. Bağlantıyı tekrar dene.';
+const start = document.getElementById('start');
+
+start.addEventListener('click', async () => {
+  const host = document.getElementById('server').value;
+  const ping = document.getElementById('ping');
+  const status = document.getElementById('status');
+
+  start.disabled = true;
+  start.textContent = 'TEST EDİLİYOR...';
+  ping.textContent = '...';
+
+  const results = [];
+
+  for (let i = 0; i < 3; i++) {
+    status.textContent = `Ölçüm ${i + 1}/3`;
+
+    const begin = performance.now();
+
+    try {
+      await fetch(
+        'https://' + host + '/cdn-cgi/trace?t=' + Date.now(),
+        {
+          mode: 'no-cors',
+          cache: 'no-store',
+          signal: AbortSignal.timeout(8000)
+        }
+      );
+
+      results.push(Math.round(performance.now() - begin));
+    } catch (error) {
+      // Başarısız ölçümü ortalamaya katma.
+    }
   }
-  start.disabled=false;
-  start.textContent='▶ TEKRAR TEST ET';
+
+  if (results.length > 0) {
+    const average = Math.round(
+      results.reduce((sum, value) => sum + value, 0) / results.length
+    );
+
+    ping.textContent = average + ' ms';
+    status.textContent =
+      `${results.length} başarılı ölçüm · Ortalama web yanıt süresi`;
+  } else {
+    ping.textContent = '—';
+    status.textContent = 'Ölçüm başarısız. Tekrar dene.';
+  }
+
+  start.disabled = false;
+  start.textContent = '▶ TEKRAR TEST ET';
 });
 </script>
+
 </body>
 </html>
