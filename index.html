@@ -3,55 +3,87 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101018">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090611">
 <title>BOjNeX Client</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#101018;color:white;font-family:Arial,sans-serif;padding:22px}
-header{text-align:center;padding:28px 0}
-h1{color:#ff36b7;font-size:34px;margin:0}
-p{color:#aaa}
-.card{background:#1c1c29;border:1px solid #383044;border-radius:16px;padding:20px;margin:16px 0}
-button{width:100%;padding:15px;border:0;border-radius:10px;background:#ff36b7;color:#160b16;font-size:17px;font-weight:bold}
-.value{font-size:38px;color:#ff36b7;font-weight:bold;margin:16px 0}
-.small{font-size:13px;color:#888}
+body{margin:0;background:#090611;color:#fff;font-family:Arial,sans-serif;min-height:100vh;padding:24px 18px}
+.app{max-width:440px;margin:auto}
+.logo{text-align:center;font-size:30px;font-weight:900;letter-spacing:3px;margin:22px 0 6px}
+.logo span{color:#bd5cff}
+.sub{text-align:center;color:#9b91ad;font-size:12px;letter-spacing:2px;margin-bottom:30px}
+.card{background:linear-gradient(145deg,#191126,#100b19);border:1px solid #38234d;border-radius:17px;padding:17px;margin:14px 0;box-shadow:0 8px 28px #0005}
+.label{font-size:11px;color:#a99bbd;letter-spacing:1.5px;margin-bottom:10px}
+select{width:100%;background:#0c0813;color:white;border:1px solid #49305f;border-radius:10px;padding:13px;font-size:15px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat{background:#171020;border:1px solid #352243;border-radius:14px;text-align:center;padding:17px 4px}
+.stat .name{font-size:10px;color:#a99bbd;letter-spacing:1px}
+.stat .value{font-size:22px;font-weight:bold;margin-top:9px;color:#d6a1ff}
+button{width:100%;padding:17px;border:0;border-radius:13px;background:linear-gradient(100deg,#8c35ff,#e34fcb);color:white;font-weight:900;font-size:16px;letter-spacing:1px;box-shadow:0 0 24px #a63dff55}
+button:active{transform:scale(.98)}
+#status{text-align:center;color:#b8a6cc;font-size:12px;margin-top:17px;min-height:18px}
+.note{text-align:center;color:#716781;font-size:11px;line-height:1.6;margin-top:24px}
 </style>
 </head>
 <body>
-<header>
-<h1>BOjNeX</h1>
-<p>MY CLIENT · INTERNET TEST</p>
-</header>
-<div class="card">
-<h2>Bağlantı testi</h2>
-<p>İnternet yanıt süreni yaklaşık olarak ölç.</p>
-<div class="value" id="ping">-- ms</div>
-<button onclick="testPing()">TESTİ BAŞLAT</button>
-<p id="status" class="small">Teste hazır</p>
+<div class="app">
+  <div class="logo">BOj<span>NeX</span></div>
+  <div class="sub">GAMING NETWORK CLIENT</div>
+
+  <div class="card">
+    <div class="label">OYUN SEÇ</div>
+    <select id="game">
+      <option value="cloudflare.com">Genel bağlantı testi</option>
+      <option value="google.com">Google bağlantısı</option>
+      <option value="github.com">GitHub bağlantısı</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <div class="label">TEST HEDEFİ</div>
+    <select id="server">
+      <option value="cloudflare.com">Cloudflare</option>
+      <option value="google.com">Google</option>
+      <option value="github.com">GitHub</option>
+    </select>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="name">PING</div><div class="value" id="ping">--</div></div>
+    <div class="stat"><div class="name">CPU</div><div class="value">--</div></div>
+    <div class="stat"><div class="name">RAM</div><div class="value">--</div></div>
+  </div>
+
+  <button id="start">▶ TESTİ BAŞLAT</button>
+  <div id="status">Test için hazır</div>
+  <div class="note">BOjNeX CLIENT · Bağlantı tanılama aracı<br>CPU ve RAM değerleri bu web sürümünde ölçülmüyor.</div>
 </div>
-<div class="card">
-<h3>Bilgi</h3>
-<p>Bu test internet yanıt süresini ölçer. Free Fire oyun sunucusunun gerçek pingini göstermez.</p>
-</div>
+
 <script>
-async function testPing(){
-const v=document.getElementById('ping');
-const s=document.getElementById('status');
-v.textContent='...';
-s.textContent='Bağlantı test ediliyor';
-try{
-const start=performance.now();
-await fetch('https://www.cloudflare.com/cdn-cgi/trace?x='+Date.now(),{cache:'no-store',mode:'no-cors'});
-const ms=Math.round(performance.now()-start);
-v.textContent=ms+' ms';
-s.textContent='Test tamamlandı';
-}catch(e){
-v.textContent='Hata';
-s.textContent='İnternet bağlantını kontrol et';
-}
-}
+const start=document.getElementById('start');
+start.addEventListener('click',async()=>{
+  const host=document.getElementById('server').value;
+  const ping=document.getElementById('ping');
+  const status=document.getElementById('status');
+  start.disabled=true;
+  start.textContent='TEST EDİLİYOR...';
+  ping.textContent='...';
+  status.textContent='Bağlantı ölçülüyor';
+  const begin=performance.now();
+  try{
+    await fetch('https://'+host+'/cdn-cgi/trace?x='+Math.random(),{
+      mode:'no-cors',cache:'no-store',signal:AbortSignal.timeout(8000)
+    });
+    ping.textContent=Math.round(performance.now()-begin)+' ms';
+    status.textContent='İstek gönderildi; sonuç yaklaşık bağlantı süresidir.';
+  }catch(e){
+    ping.textContent='—';
+    status.textContent='Ölçüm başarısız. Bağlantıyı tekrar dene.';
+  }
+  start.disabled=false;
+  start.textContent='▶ TEKRAR TEST ET';
+});
 </script>
 </body>
 </html>
-
