@@ -13,7 +13,7 @@
   "lang": "tr",
   "icons": [
     {
-      "src": "/BOjNeX/Launchericon512x512.png",
+      "src": "/BOjNeX/launchericon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
