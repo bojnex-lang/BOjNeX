@@ -1,4 +1,3 @@
-
 {
   "background_color": "#101820",
   "dir": "auto",
@@ -14,7 +13,7 @@
   "lang": "tr",
   "icons": [
     {
-      "src": "/BOjNeX/bojnex-logo.png",
+      "src": "/BOjNeX/Launchericon512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
